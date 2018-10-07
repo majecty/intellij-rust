@@ -5,8 +5,6 @@
 
 package org.rust.lang.core.resolve
 
-import junit.framework.AssertionFailedError
-
 class RsTypeAwareResolveTest : RsResolveTestBase() {
     fun `test self method call expr`() = checkByCode("""
         struct S;
@@ -662,5 +660,14 @@ class RsTypeAwareResolveTest : RsResolveTestBase() {
             foo().baz();
                 //^
         }
+    """)
+
+    fun `test filter methods from dangling (not attached to some crate) rust files`() = stubOnlyResolve("""
+    //- dangling.rs
+        impl u8 { fn foo(self){} }
+    //- main.rs
+        fn main() {
+            0u8.foo();
+        }     //^ unresolved
     """)
 }
