@@ -281,6 +281,14 @@ class RsNeedlessLifetimesInspectionTest : RsInspectionsTestBase(RsNeedlessLifeti
         }
     """)
 
+    fun `test no elision for impl 1`() = doTest("""
+        fn foo<'a>(_: impl Into<&'a ()>) {}
+    """)
+
+    fun `test no elision for impl 2`() = doTest("""
+        fn foo<'a>(_: impl Iterator<Item = &'a ()>) {}
+    """)
+
     private fun doTest(
         @Language("Rust") text: String
     ) = checkFixIsUnavailable(FIX_NAME, text, checkWeakWarn = true)
